@@ -1,0 +1,12 @@
+#PBS -N 21
+#PBS -l nodes=1:ppn=1
+#PBS -M Guo.shicheng@marshfieldresearch.org
+#PBS -o /gpfs/home/guosa/hpc/cpgSNP/Asian/temp/
+#PBS -e /gpfs/home/guosa/hpc/cpgSNP/Asian/temp/
+cd /gpfs/home/guosa/hpc/cpgSNP/Asian
+# bcftools norm -m + /gpfs/home/guosa/hpc/db/Gnomad/vcf/gnomad.genomes.r2.1.sites.chr21.vcf.bgz -Oz -o gnomad.genomes.r2.1.sites.chr21.rec.vcf.bgz
+# tabix -p vcf gnomad.genomes.r2.1.sites.chr21.rec.vcf.bgz
+bcftools view -v snps -f PASS -i 'INFO/AF_eas>0.3 &INFO/AF_eas<0.7' -T cpgSNPs.hg19.bed /gpfs/home/guosa/hpc/db/Gnomad/vcf/gnomad.genomes.r2.1.sites.chr21.rec.vcf.bgz -Ou -o gnomad.genomes.r2.1.sites.chr21.rec.cpgSNPs.vcf.bgz
+bcftools sort gnomad.genomes.r2.1.sites.chr21.rec.cpgSNPs.vcf.bgz -Ou -o gnomad.genomes.r2.1.sites.chr21.rec.cpgSNPs.sort.vcf.bgz
+bcftools norm -d all gnomad.genomes.r2.1.sites.chr21.rec.cpgSNPs.sort.vcf.bgz -Ou -o gnomad.genomes.r2.1.sites.chr21.rec.cpgSNPs.sort.rmdup.vcf.bgz
+bcftools view -m2 -M2 -v snps gnomad.genomes.r2.1.sites.chr21.rec.cpgSNPs.sort.rmdup.vcf.bgz -Ov -o gnomad.genomes.r2.1.sites.chr21.rec.cpgSNPs.sort.rmdup.biallelic.vcf.bgz
